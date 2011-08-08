@@ -52,11 +52,8 @@ describe "LayoutLinks" do
   describe "when signed in" do
     
     before(:each) do
-      @user = Factory(:user)
-      visit signin_path
-      fill_in :email, :with => @user.email
-      fill_in :password, :with => @user.password
-      click_button
+      @user=Factory(:user)
+      integration_sign_in(@user)
     end
 
     it "should have a signout link" do
@@ -70,5 +67,24 @@ describe "LayoutLinks" do
       response.should have_selector("a", :href => user_path(@user),
                                     :content => "Profile")
     end
+
+    it "users page should not have delete links" do
+      visit users_path
+      response.should_not have_selector("a", :content => "delete")
+    end
   end
+  
+  describe "when admin user" do
+    before(:each) do
+      @admin=Factory(:user, :admin => true)
+      integration_sign_in(@admin)
+    end
+
+    it "users page should have delete links" do
+      visit users_path
+      response.should have_selector("a", :content => "delete")
+    end
+
+  end
+
 end

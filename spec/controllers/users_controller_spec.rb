@@ -326,6 +326,7 @@ describe UsersController do
         delete :destroy, :id => @user
         response.should redirect_to(users_path)
       end
+
     end
   end
 end
