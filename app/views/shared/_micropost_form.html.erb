@@ -1,8 +1,42 @@
+<SCRIPT LANGUAGE="JavaScript" type="text/javascript"><!--
+function toCount(entrance,exit,text,characters) {
+    var entranceObj=getObject(entrance);
+    var exitObj=getObject(exit);
+    var length=characters - entranceObj.value.length;
+    if(length <= 0) {
+	length=0;
+	text='<span class="disable"> '+text+' </span>';
+	entranceObj.value=entranceObj.value.substr(0,characters);
+    }
+    exitObj.innerHTML = text.replace("{CHAR}",length);
+}      
+
+function getObject(obj) {
+    var theObj;
+    if(document.all) {
+	if(typeof obj=="string") {
+	    return document.all(obj);
+	} else {
+	    return obj.style;
+	}
+    }
+    if(document.getElementById) {
+	if(typeof obj=="string") {
+	    return document.getElementById(obj);
+	} else {
+	    return obj.style;
+	}
+    }
+    return null;
+      }
+// End -->
+</SCRIPT>
 <%= form_for @micropost do |f| %>
 <%= render 'shared/error_messages', :object => f.object %>
 <div class="field">
-  <%= f.text_area :content %>
+    <%= f.text_area :content, :onKeyPress => "toCount('micropost_content', 'counter', '{CHAR} characters left.', 140);" %>
 </div>
+<span id="counter">140 characters left. </span><br /><br />
 <div class="actions">
   <%= f.submit "Submit" %>
 </div>
