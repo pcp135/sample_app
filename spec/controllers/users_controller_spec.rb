@@ -16,15 +16,11 @@ describe UsersController do
     describe "for signed in users" do
 
       before (:each) do
-        @user = test_sign_in(Factory(:user))
-        second = Factory(:user, :name => "Bob", 
-                         :email => "another@example.com")
-        third = Factory(:user, :name => "Ben", 
-                        :email => "another@example.net")
-        @users = [@user, second, third]
-        30.times do
-          @users << Factory(:user, :email => Factory.next(:email))
+        @users=[Factory(:user)]
+        35.times do
+          @users << Factory(:user)
         end
+        test_sign_in(@users[0])
       end
 
       it "should be successful" do
@@ -132,6 +128,7 @@ describe UsersController do
       response.should have_selector("title", :content => "Signup")
     end 
   end
+  
   describe "POST 'create'" do
     describe "failure" do
       before(:each) do
@@ -157,7 +154,7 @@ describe UsersController do
     end
     describe "success" do
       before(:each) do
-        @attr = {:name => "New User", :email => "user@test.com",
+        @attr = {:name => "NewUser", :email => "user@test.com",
           :password => "foobar", :password_confirmation => "foobar"}
       end
       
@@ -237,7 +234,7 @@ describe UsersController do
     describe "success" do
 
       before (:each) do
-        @attr = { :name => "New Name", :email => "user@example.org",
+        @attr = { :name => "NewName", :email => "user@example.org",
           :password => "barbaz", :password_confirmation => "barbaz" }
       end
 
@@ -281,7 +278,7 @@ describe UsersController do
 
     describe "for signed in users" do
       before (:each) do
-        wrong_user = Factory(:user, :email => "user@example.net")
+        wrong_user = Factory(:user)
         test_sign_in(wrong_user)
       end
 
@@ -321,8 +318,7 @@ describe UsersController do
     describe "as an admin user" do
       
       before(:each) do
-        admin = Factory(:user, :email => "admin@example.com", 
-                        :admin => true)
+        admin = Factory(:user, :admin => true)
         test_sign_in(admin)
       end
 
@@ -359,7 +355,7 @@ describe UsersController do
 
       before(:each) do
         @user=test_sign_in(Factory(:user))
-        @other_user = Factory(:user, :email => Factory.next(:email))
+        @other_user = Factory(:user)
         @user.follow!(@other_user)
       end
 

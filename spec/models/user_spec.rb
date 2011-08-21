@@ -16,7 +16,7 @@ describe User do
 
   before(:each) do
     @attr = { 
-      :name => "Example User", 
+      :name => "ExampleUser", 
       :email => "user@example.com",
       :password => "foobar",
       :password_confirmation => "foobar"
@@ -42,6 +42,18 @@ describe User do
     long_name_user = User.new(@attr.merge(:name => long_name))
     long_name_user.should_not be_valid
   end
+  
+  it "should reject names with a space in them" do
+    space_user = User.new(@attr.merge(:name => "Space Man"))
+    space_user.should_not be_valid
+  end
+  
+  it "should reject duplicate names" do
+    User.create!(@attr)
+    duplicate_user = User.new(@attr.merge(:email => "user2@example.com",
+    :name =>@attr[:name].upcase))
+    duplicate_user.should_not be_valid
+  end
 
   it "should accept valid email addresses" do
     addresses = %w[user@foo.com THE_USER@foo.bar.org first.last@foo.jp]
@@ -61,7 +73,7 @@ describe User do
 
   it "should reject duplicate email addresses" do
     upcased_email = @attr[:email].upcase
-    User.create!(@attr.merge(:email => upcased_email))
+    User.create!(@attr.merge(:email => upcased_email, :name => "Bob"))
     user_with_duplicate_email = User.new(@attr)
     user_with_duplicate_email.should_not be_valid
   end
@@ -193,14 +205,13 @@ describe User do
       end
       
       it "should not include a different user's microposts" do
-        mp3 = Factory(:micropost, 
-                      :user => Factory(:user, 
-                                       :email => Factory.next(:email)))
+        different_user = Factory(:user)
+        mp3 = Factory(:micropost, :user => different_user)
         @user.feed.include?(mp3).should be_false
       end
       
       it "should include the microposts of followed users" do
-        followed = Factory(:user, :email => Factory.next(:email))
+        followed = Factory(:user)
         mp3 = Factory(:micropost, :user => followed)
         @user.follow!(followed)
         @user.feed.should include(mp3)
