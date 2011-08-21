@@ -69,6 +69,10 @@ class User < ActiveRecord::Base
   def unfollow!(followed)
     relationships.find_by_followed_id(followed).destroy
   end
+  
+  def to_param
+    "#{name}"
+  end
 
   private
   

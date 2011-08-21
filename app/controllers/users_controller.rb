@@ -6,20 +6,20 @@ class UsersController < ApplicationController
 
   def following
     @title = "Following"
-    @user = User.find(params[:id])
+    @user = User.find_by_name(params[:id])
     @users = @user.following.paginate(:page => params[:page])
     render 'show_follow'
   end
 
   def followers
     @title = "Followers"
-    @user = User.find(params[:id])
+    @user = User.find_by_name(params[:id])
     @users = @user.followers.paginate(:page => params[:page])
     render 'show_follow'
   end
 
   def show
-    @user = User.find(params[:id])
+    @user = User.find_by_name(params[:id])
     @microposts = @user.microposts.paginate(:page => params[:page])
     @title = @user.name
   end
@@ -58,15 +58,16 @@ class UsersController < ApplicationController
       redirect_to @user
     else
       @title = "Edit user"
+      @user.name = current_user.name
       render 'edit'
     end
   end
 
   def destroy
-    if User.find(params[:id]) == current_user
+    if User.find_by_name(params[:id]) == current_user
       flash[:error] = "Cannot delete yourself"
     else
-      User.find(params[:id]).destroy
+      User.find_by_name(params[:id]).destroy
       flash[:success] = "User deleted"
     end
     redirect_to users_path
@@ -74,7 +75,7 @@ class UsersController < ApplicationController
 
   private
   def correct_user
-    @user = User.find(params[:id])
+    @user = User.find_by_name(params[:id])
     redirect_to(root_path) unless current_user?(@user)
   end
 
