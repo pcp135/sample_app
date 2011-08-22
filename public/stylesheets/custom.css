@@ -131,15 +131,41 @@ div.field, div.actions {
     margin-bottom: 10px;
 }
 
+div.input {
+    margin-bottom: 10px;
+	margin-top: 10px;
+}
+
+label {
+	padding: 0px;
+	display: block;
+}
+
+form {
+	display: table;
+}
+/*
 .field_with_errors {
     margin-top: 10px;
-    padding: 2px;
+    padding: 3px;
     background-color: red;
     display: table;
 }
 
+.field_with_errors .message {
+	color: #D00;
+	padding-left: 15px;
+	font-size: 12px;
+}
+
 .field_with_errors label {
     color: #fff;
+	padding: 3px;
+}
+*/
+span.error {
+	padding: 0.3em;
+	margin-left: 0.5em;
 }
 
 #error_explanation {
