@@ -82,6 +82,28 @@ describe Micropost do
       Micropost.from_users_followed_by(@user).
         should_not include(@third_post)
     end
+    
+    it "should not include a reply that isn't for the user" do
+      @reply_post = @other_user.microposts.create!(
+      :content => "@#{@third_user.name} reply")
+      @reply_post.replying?
+      Micropost.from_users_followed_by(@user).
+      should_not include(@reply_post)
+    end
+    
+    it "should include the user replying to another user" do
+      @reply_post = @user.microposts.create!(
+      :content => "@#{@other_user.name} reply")
+      @reply_post.replying?
+      Micropost.from_users_followed_by(@user).should include(@reply_post)
+    end
+    
+    it "should include someone else replying to the user" do
+      @reply_post = @other_user.microposts.create!(
+      :content => "@#{@user.name} reply")
+      @reply_post.replying?
+      Micropost.from_users_followed_by(@user).should include(@reply_post)
+    end
 
   end
 
