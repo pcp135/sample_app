@@ -100,14 +100,21 @@ describe Micropost do
     end
     
     it "should not be populated where not replying" do
-      @micropost.replying?.should be_false
+      @micropost.replying?
+      @micropost.in_reply_to.should be_nil
     end
     
     it "should be populated where replying" do
       @other_user = Factory(:user)
       @reply_post = @user.microposts.create!(:content => "@#{@other_user.name} I am replying")
-      @reply_post.replying?.should be_true
+      @reply_post.replying?
       @reply_post.in_reply_to.should == @other_user.id
+    end
+    
+    it "should not be populated if user doesn't exist" do
+      @reply_post = @user.microposts.create!(:content => "@false I am replying")
+      @reply_post.replying?
+      @reply_post.in_reply_to.should be_nil      
     end
         
   end

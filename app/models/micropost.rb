@@ -13,8 +13,11 @@ class Micropost < ActiveRecord::Base
   def replying?()
     replying_to = self.content.match(/@([\w+\-.]+)/)
     unless replying_to.nil? 
-      self.in_reply_to = User.find_by_name(replying_to[1]).id
-      self.save
+      target = User.find_by_name(replying_to[1])
+      unless target.nil?
+        self.in_reply_to = target.id
+        self.save
+      end
     end
   end
 
