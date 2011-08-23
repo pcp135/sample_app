@@ -147,6 +147,7 @@ describe User do
       end
     end
   end
+  
   describe "admin attribute" do
     
     before (:each) do
@@ -177,7 +178,6 @@ describe User do
                      :created_at => 1.hour.ago)
     end
     
-
     it "should have a microposts attribute" do
       @user.should respond_to(:microposts)
     end
@@ -195,7 +195,7 @@ describe User do
 
     describe "status feed" do
       
-      it "should hae a feed" do
+      it "should have a feed" do
         @user.should respond_to(:feed)
       end
 
@@ -218,6 +218,7 @@ describe User do
       end
 
     end
+  
   end
   
   describe "relationships" do

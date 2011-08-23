@@ -10,6 +10,14 @@ class Micropost < ActiveRecord::Base
 
   scope :from_users_followed_by, lambda { |user| followed_by(user)}
 
+  def replying?()
+    replying_to = self.content.match(/@([\w+\-.]+)/)
+    unless replying_to.nil? 
+      self.in_reply_to = User.find_by_name(replying_to[1]).id
+      self.save
+    end
+  end
+
   private
 
   def self.followed_by(user)
@@ -18,5 +26,5 @@ WHERE follower_id = :user_id)
     where("user_id IN (#{following_ids}) OR user_id = :user_id", 
           { :user_id => user })
   end
-
+  
 end

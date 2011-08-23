@@ -80,8 +80,36 @@ describe Micropost do
 
     it "should not include an unfollowed user's microposts" do
       Micropost.from_users_followed_by(@user).
-        should_not include(@othird_post)
+        should_not include(@third_post)
     end
 
   end
+
+  describe "in_reply_to" do
+    
+    before(:each) do
+      @micropost = @user.microposts.create!(@attr)
+    end
+
+    it "should be present" do
+      @micropost.should respond_to(:in_reply_to)
+    end
+    
+    it "should have a replying? method" do
+      @micropost.should respond_to(:replying?)
+    end
+    
+    it "should not be populated where not replying" do
+      @micropost.replying?.should be_false
+    end
+    
+    it "should be populated where replying" do
+      @other_user = Factory(:user)
+      @reply_post = @user.microposts.create!(:content => "@#{@other_user.name} I am replying")
+      @reply_post.replying?.should be_true
+      @reply_post.in_reply_to.should == @other_user.id
+    end
+        
+  end
+
 end
