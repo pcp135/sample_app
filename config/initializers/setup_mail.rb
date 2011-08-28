@@ -7,6 +7,9 @@ ActionMailer::Base.smtp_settings = {
   :authentication => "plain",
   :enable_startttls_auto => true
 }
-
-ActionMailer::Base.default_url_options[:host] = "localhost:3000"
-Mail.register_interceptor(DevelopmentMailInterceptor) if Rails.env.development?
+if Rails.env.development?
+  ActionMailer::Base.default_url_options[:host] = "localhost:3000"
+  Mail.register_interceptor(DevelopmentMailInterceptor)
+else
+  ActionMailer::Base.default_url_options[:host] = "young-wind-583.heroku.com"
+end
