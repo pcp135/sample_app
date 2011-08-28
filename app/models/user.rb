@@ -29,14 +29,17 @@ class User < ActiveRecord::Base
   email_regex = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   name_regex = /\A[\w+\-.]+\z/i
 
-  validates_presence_of :name, :email, :password
+  validates_presence_of :name, :email
   validates_presence_of :password, :on => :create
+  validates_presence_of :password, :on => :update
   validates_format_of :name, :with => name_regex
   validates_format_of :email, :with => email_regex
   validates_length_of :name, :maximum => 50
-  validates_length_of :password, :within => 6..40
+  validates_length_of :password, :within => 6..40, :on => :create
+  validates_length_of :password, :within => 6..40, :on => :update
   validates_uniqueness_of :name, :email, :case_sensitive => false
-  validates_confirmation_of :password
+  validates_confirmation_of :password, :on => :create
+  validates_confirmation_of :password, :on => :update
   
   #validates :name, :presence => true, :length => { :maximum => 50}, 
   #:uniqueness => { :case_sensitive => false }, 
@@ -48,6 +51,13 @@ class User < ActiveRecord::Base
 
   before_save :encrypt_password
 
+  def send_password_reset
+    generate_token(:password_reset_token)
+    self.password_reset_sent_at = Time.zone.now
+    save!
+    UserMailer.password_reset(self).deliver
+  end
+  
   def feed
     Micropost.from_users_followed_by(self)
   end
