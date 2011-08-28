@@ -11,7 +11,11 @@ class SessionsController < ApplicationController
       @title = "Sign in"
       render 'new'
     else
-      sign_in user
+      if params[:remember_me]
+        sign_in user 
+      else
+        temp_sign_in user
+      end
       redirect_back_or user
     end
   end
