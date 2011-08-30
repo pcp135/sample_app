@@ -1,5 +1,7 @@
 SampleApp::Application.routes.draw do
+
   resources :password_resets
+  resources :email_confirmations
   resources :users do
     match '/users/:name', :to => 'users#show', :as => :user_path
     member do

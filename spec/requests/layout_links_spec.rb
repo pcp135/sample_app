@@ -52,7 +52,7 @@ describe "LayoutLinks" do
   describe "when signed in" do
     
     before(:each) do
-      @user=Factory(:user)
+      @user=Factory(:user, :email_confirmed => true)
       integration_sign_in(@user)
     end
 
@@ -76,7 +76,7 @@ describe "LayoutLinks" do
   
   describe "when admin user" do
     before(:each) do
-      @admin=Factory(:user, :admin => true)
+      @admin=Factory(:user, :email_confirmed => true, :admin => true)
       integration_sign_in(@admin)
     end
 

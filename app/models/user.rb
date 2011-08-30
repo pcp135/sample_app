@@ -54,8 +54,16 @@ class User < ActiveRecord::Base
   def send_password_reset
     generate_token(:password_reset_token)
     self.password_reset_sent_at = Time.zone.now
-    save false
+    save :validate => false
     UserMailer.password_reset(self).deliver
+  end
+  
+  def send_email_confirmation
+    generate_token(:email_confirmation_token)
+    self.email_confirmation_sent_at = Time.zone.now
+    self.email_confirmed = false
+    save :validate => false
+    UserMailer.email_confirmation(self).deliver
   end
   
   def feed
@@ -103,7 +111,7 @@ class User < ActiveRecord::Base
   
   def encrypt_password
     self.salt = make_salt if new_record?
-    self.encrypted_password = encrypt(password)
+    self.encrypted_password = encrypt(password) unless password.nil?
   end
 
   def encrypt(string)

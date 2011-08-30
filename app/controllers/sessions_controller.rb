@@ -10,6 +10,10 @@ class SessionsController < ApplicationController
       flash.now[:error] = "Invalid email/password combination."
       @title = "Sign in"
       render 'new'
+    elsif !user.email_confirmed?
+      user.send_email_confirmation
+      flash[:error] = "Your account has not been activated yet, please check your email."
+      redirect_to root_path
     else
       if params[:remember_me]
         sign_in user 
