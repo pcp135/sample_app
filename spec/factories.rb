@@ -3,6 +3,7 @@ Factory.define :user do |user|
   user.email {Factory.next(:email)}
   user.password "foobar"
   user.password_confirmation "foobar"
+  user.email_confirmed true
 end
 
 Factory.sequence :email do |n|

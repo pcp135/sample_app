@@ -2,3 +2,7 @@
 <%=	f.input :email, :required => false %>
 <%= f.input :password, :required => false %>
 <%= f.input :password_confirmation %>
+<div class = "field">
+<%= f.label :follower_mail_notifications, "Notify me when I have new followers" %>
+<%= f.check_box :follower_mail_notifications %>
+</div>

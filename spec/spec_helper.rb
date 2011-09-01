@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'spork'
+#require 'capybara/rspec'
 
 Spork.prefork do
   # Loading more in this block will cause your tests to run faster. However,
@@ -18,6 +19,9 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
     
     config.use_transactional_fixtures = true
     
+    config.include(MailerMacros)
+    config.before(:each) { reset_email }
+    
     def test_sign_in(user)
       controller.sign_in(user)
     end
@@ -26,7 +30,7 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
       visit signin_path
       fill_in :email, :with => user.email
       fill_in :password, :with => user.password
-      click_button
+      click_button "Sign in"
     end
   end
 

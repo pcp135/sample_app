@@ -277,6 +277,82 @@ describe User do
       @followed.followers.should include(@user)
     end
 
+    it "should send a newly followed user a mail notification" do
+      @user.follow!(@followed)
+      last_email.to.should include(@followed.email)
+    end
+
   end
 
+  describe "send_password_reset" do
+    let(:user) { Factory(:user)}
+
+    it "generates a unique password_reset_token each time" do
+      user.send_password_reset
+      last_token = user.password_reset_token
+      user.send_password_reset
+      user.password_reset_token.should_not eq(last_token)
+    end
+
+    it "saves the time the password reset was sent" do
+      user.send_password_reset
+      user.reload.password_reset_sent_at.should be_present
+    end
+
+    it "delivers email to the user" do
+      user.send_password_reset
+      last_email.to.should include(user.email)
+    end
+  end    
+
+  describe "send_email_confirmation" do
+    let(:user) { Factory(:user, :email_confirmed => false)}
+
+    it "generates a unique email_confirmation_token each time" do
+      user.send_email_confirmation
+      last_token = user.email_confirmation_token
+      user.send_email_confirmation
+      user.email_confirmation_token.should_not eq(last_token)    
+    end
+
+    it "saves the time the email confirmation was sent" do
+      user.send_email_confirmation
+      user.reload.email_confirmation_sent_at.should be_present
+    end
+
+    it "delivers email to the user" do
+      user.send_email_confirmation
+      last_email.to.should include(user.email)
+    end
+
+  end
+
+  describe "follower_mail_notifications" do
+    
+    before(:each) do
+      @user = Factory(:user)
+    end
+    
+    it "should respond to follower_mail_notificiations" do
+      @user.should respond_to(:follower_mail_notifications)
+    end
+    
+    it "should default to true" do
+      @user.should be_follower_mail_notifications
+    end
+    
+    it "should be a changeable attribute" do
+      @user.toggle!(:follower_mail_notifications)
+      @user.should_not be_follower_mail_notifications
+    end
+    
+    it "should not be sent if user disabled the option" do
+      @user.toggle!(:follower_mail_notifications)
+      @follower = Factory(:user)
+      @follower.follow!(@user)
+      last_email.should be_nil
+    end
+    
+  end
+    
 end

@@ -14,7 +14,7 @@ require 'digest'
 
 class User < ActiveRecord::Base
   attr_accessor :password
-  attr_accessible :name, :email, :password, :password_confirmation
+  attr_accessible :name, :email, :password, :password_confirmation, :follower_mail_notifications
 
   has_many :microposts, :dependent => :destroy
   has_many(:relationships, :foreign_key => "follower_id",
@@ -91,6 +91,7 @@ class User < ActiveRecord::Base
 
   def follow!(followed)
     relationships.create!(:followed_id => followed.id)
+    UserMailer.follower_notification(followed, self).deliver if followed.follower_mail_notifications
   end
 
   def unfollow!(followed)

@@ -62,5 +62,32 @@ describe "Users" do
     end
   end
 
+  describe "profile settings" do
+    before(:each) do
+      @user = Factory(:user)
+      integration_sign_in(@user)
+    end
+
+    it "should have a settings page with key attributes" do
+      visit edit_user_path(@user)
+      response.should have_selector("label", :content => "Name")
+      response.should have_selector("label", :content => "Email")
+      response.should have_selector("label", :content => "Password")
+      response.should have_selector("label", :content => "Password confirmation")
+      response.should have_selector("label", :content => "Notify me when I have new followers")      
+    end  
+    
+    it "should change the mail_notifications setting if the user updates it" do
+      visit edit_user_path(@user)
+      fill_in "Password", :with => @user.password
+      fill_in "Password confirmation", :with => @user.password
+      fill_in "Notify me when I have new followers", :with => false
+      click_button "Update"
+      @user.reload
+      @user.should_not be_follower_mail_notifications
+    end
+
+  end
+
 end
 
